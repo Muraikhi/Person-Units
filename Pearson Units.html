@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pearson BTEC Units Summary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #FFFFFF;
+            --light-bg: #F4F6F8;
+            --primary-text: #0A2344;
+            --accent: #007A9B;
+            --nav-bg: #0A2344;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--primary-text);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-text);
+        }
+
+        /* Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: transparent;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: none;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        header.header-scrolled {
+            background-color: var(--primary-bg);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            padding: 1rem 2rem;
+        }
+
+        .logo img {
+            height: 45px;
+            display: block;
+        }
+
+        /* Simplified Menu Button */
+        .menu-button {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .menu-button svg {
+            width: 100%;
+            height: 100%;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .menu-button svg path {
+            fill: none;
+            stroke: var(--primary-text);
+            stroke-width: 2;
+            stroke-linecap: round;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .menu-button.active svg path:nth-child(1) {
+            d: path("M 8 8 L 32 32");
+        }
+
+        .menu-button.active svg path:nth-child(2) {
+            d: path("M 8 32 L 32 8");
+        }
+
+        /* Dropdown Navigation Panel */
+        #dropdown-nav {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            width: 100%;
+            background-color: var(--light-bg);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow: hidden;
+            height: 0;
+        }
+
+        #dropdown-nav.active {
+            opacity: 1;
+            transform: translateY(0);
+            height: auto;
+            padding: 2rem;
+        }
+
+        .nav-links {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            list-style: none;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-links li {
+            text-align: center;
+        }
+
+        .nav-links a {
+            color: var(--primary-text);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 0.8rem 1rem;
+            display: block;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+            background-color: rgba(0, 122, 155, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a.active-link {
+            color: var(--accent);
+            font-weight: 700;
+            background-color: rgba(0, 122, 155, 0.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 2rem;
+            background: linear-gradient(135deg, var(--light-bg) 0%, #e8ecf1 100%);
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--primary-text);
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            font-weight: 400;
+            max-width: 800px;
+            color: var(--primary-text);
+        }
+
+        /* Main Content */
+        main {
+            padding: 4rem 2rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .unit-section {
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .unit-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .unit-card {
+            background-color: var(--primary-bg);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .unit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .unit-content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2.5rem;
+            align-items: start;
+        }
+
+        .unit-image-container {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .unit-image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .unit-image-container img:hover {
+            transform: scale(1.03);
+            filter: brightness(0.95);
+        }
+
+        .unit-text-container h2 {
+            font-size: clamp(1.8rem, 3vw, 2.8rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--primary-text);
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 0.5rem;
+        }
+
+        .unit-text-container h3 {
+            font-size: clamp(1.3rem, 2vw, 1.8rem);
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            color: var(--primary-text);
+            position: relative;
+        }
+
+        .unit-text-container h3:first-of-type {
+            margin-top: 0;
+        }
+
+        .unit-text-container h3:nth-of-type(2) {
+            border-top: 1px solid rgba(10, 35, 68, 0.1);
+            padding-top: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .unit-text-container p {
+            font-size: clamp(1rem, 1.5vw, 1.2rem);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .unit-text-container ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .unit-text-container li {
+            font-size: clamp(1rem, 1.5vw, 1.2rem);
+            margin-bottom: 1rem;
+            padding-left: 1.8rem;
+            position: relative;
+            color: #444;
+        }
+
+        .unit-text-container li:before {
+            content: "•";
+            color: var(--accent);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+            font-size: 1.6rem;
+            top: -2px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+            background: linear-gradient(to bottom, var(--light-bg) 0%, #e0e5eb 100%);
+            color: var(--primary-text);
+            font-size: 1rem;
+            margin-top: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .unit-content-wrapper {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .unit-text-container h2 {
+                font-size: 2rem;
+            }
+            
+            .unit-text-container h3 {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .unit-card {
+                padding: 1.5rem;
+            }
+            
+            .unit-text-container h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="main-header">
+        <div class="logo">
+            <img src="Pearson.png" alt="Pearson Logo">
+        </div>
+        <div class="menu-button" id="menu-button">
+            <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 8 10 L 32 10" stroke-linecap="round"></path>
+                <path d="M 8 20 L 32 20" stroke-linecap="round"></path>
+                <path d="M 8 30 L 32 30" stroke-linecap="round"></path>
+            </svg>
+        </div>
+    </header>
+
+    <!-- Dropdown Navigation Panel -->
+    <div id="dropdown-nav">
+        <ul class="nav-links">
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#unit-1"> Unit 1 Information Technology</a></li>
+            <li><a href="#unit-2"> Unit 2 Database</a></li>
+            <li><a href="#unit-4">Unit 4 Application</a></li>
+            <li><a href="#unit-5">Unit 5 Data Modeling </a></li>
+            <li><a href="#unit-6">Unit 6 Website</a></li>
+            <li><a href="#unit-10">Unit 10 Big Data</a></li>
+            <li><a href="#unit-13">Unit 13 Testing</a></li>
+            <li><a href="#unit-15">Unit 15 Cloud</a></li>
+            <li><a href="#unit-18">Unit 18 Internet of Things</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <h1>Pearson BTEC Units</h1>
+    </section>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Unit 1 -->
+        <section class="unit-section" id="unit-1">
+            <div class="unit-card">
+                <div class="unit-content-wrapper">
+                    <div class="unit-image-container">
+                        <img src="Unit 1 .png" alt="IT Systems - Server Room Infrastructure" loading="lazy">
+                    </div>
+                    <div class="unit-text-container">
+                        <h2>Unit 1: Information Technology Systems</h2>
+                        <h3>Unit Brief</h3>
+                        <p>This unit provides a fundamental understanding of IT systems, covering the hardware, software, and infrastructure that form the backbone of modern organizations. It explores how these components interact and how they are used to meet business and stakeholder needs.</p>
+                        <h3>Unit Aim</h3>
+                        <ul>
+                            <li>Explore how IT infrastructure meets the needs of organisations and their stakeholders.</li>
+                            <li>Understand how organisations make use of data and information.</li>
+                            <li>Develop policies for the use of IT within an organisation.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Unit 2 -->
+        <section class="unit-section" id="unit-2">
+            <div class="unit-card">
+                <div class="unit-content-wrapper">
+                    <div class="unit-image-container">
+                        <img src="Unit 2.png" alt="Information Management - Database Schema" loading="lazy">
+                    </div>
+                    <div class="unit-text-container">
+                        <h2>Unit 2: Creating Systems to Manage Information</h2>
+                        <h3>Unit Brief</h3>
+                        <p>This unit focuses on the practical skills required to design, develop, and evaluate relational database management systems. It covers the entire lifecycle from understanding system purposes and structures to implementing a final solution that meets client requirements.</p>
+                        <h3>Unit Aim</h3>
+                        <ul>
+                            <li>Understand the purpose and structure of relational database management systems.</li>
+                            <li>Design a relational database to meet client requirements.</li>
+                            <li>Develop a relational database to meet client requirements.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Unit 4 -->
+        <section class="unit-section" id="unit-4">
+            <div class="unit-card">
+                <div class="unit-content-wrapper">
+                    <div class="unit-image-container">
+                        <img src="Unit 4 .png" alt="Programming - Code on Monitor" loading="lazy">
+                    </div>
+                    <div class="unit-text-container">
+                        <h2>Unit 4: Programming</h2>
+                        <h3>Unit Brief</h3>
+                        <p>This unit introduces the core principles of computer programming and computational thinking. It covers the journey from designing a software solution to meet a specific need, through to the development and implementation of that solution using a programming language.</p>
+                        <h3>Unit Aim</h3>
+                        <ul>
+                            <li>Examine the computational thinking skills and principles of computer programming.</li>
+                            <li>Design a software solution to meet client requirements.</li>
+                            <li>Develop a software solution to meet client requirements.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Unit 5 -->
+        <section class="unit-section" id="unit-5">
+            <div class="unit-card">
+                <div class="unit-content-wrapper">
+                    <div class="unit-image-container">
+                        <img src="Unit 5 .png" alt="Data Modelling - Charts and Graphs" loading="lazy">
+                    </div>
+                    <div class="unit-text-container">
+                        <h2>Unit 5: Data Modelling</h2>
+                        <h3>Unit Brief</h3>
+                        <p>This unit explores how data can be structured and manipulated to support decision-making processes. Learners will investigate the features of spreadsheet software and apply them to design and develop data models that provide valuable insights and solutions for business scenarios.</p>
+                        <h3>Unit Aim</h3>
+                        <ul>
+                            <li>Investigate data modelling and how it can be used in the decision-making process.</li>
+                            <li>Design a data model to meet client requirements.</li>
+                            <li>Develop a data model to meet client requirements.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Unit 6 -->
+        <section class="unit-section" id="unit-6">
+            <div class="unit-card">
+                <div class="unit-content-wrapper">
+                    <div class="unit-image-container">
+                        <img src="Unit 6 .png" alt="Website Development - UI Design" loading="lazy">
+                    </div>
+                    <div class="unit-text-container">
+                        <h2>Unit 6: Website Development</h2>
+                        <h3>Unit Brief</h3>
+                        <p>This unit covers the end-to-end process of creating websites. It delves into the principles of effective design, the tools and techniques used for development (like HTML and CSS), and the process of creating a final product that is tailored to a client's specific requirements.</p>
+                        <h3>Unit Aim</h3>
+                        <ul>
+                            <li>Understand the principles of website development.</li>
+                            <li>Design a website to meet client requirements.</li>
+                            <li>Develop a website to meet client requirements.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Unit 10 -->
+        <section class="unit-section" id="unit-10">
+            <div class="unit-card">
+                <div class="unit-content-wrapper">
+                    <div class="unit-image-container">
+                        <img src="Unit 10 .png" alt="Big Data - Data Visualization" loading="lazy">
+                    </div>
+                    <div class="unit-text-container">
+                        <h2>Unit 10: Big Data and Business Analytics</h2>
+                        <h3>Unit Brief</h3>
+                        <p>This unit investigates the growing importance of big data in the modern world. Learners explore the tools and statistical techniques used to analyze large datasets, enabling organizations to improve performance, benchmark against competitors, and drive innovation.</p>
+                        <h3>Unit Aim</h3>
+                        <ul>
+                            <li>Investigate the role of big data and business analytics to improve performance, for benchmarking and/or to trigger innovation in organizations.</li>
+                            <li>Explore the statistical software tools and techniques used to analyze data in organizations.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Unit 13 -->
+        <section class="unit-section" id="unit-13">
+            <div class="unit-card">
+                <div class="unit-content-wrapper">
+                    <div class="unit-image-container">
+                        <img src="Unit 13 .png" alt="Software Testing - Flowchart" loading="lazy">
+                    </div>
+                    <div class="unit-text-container">
+                        <h2>Unit 13: Software Testing</h2>
+                        <h3>Unit Brief</h3>
+                        <p>This unit provides a comprehensive overview of software testing methodologies within the development lifecycle. It covers how to plan, execute, and report on a range of tests to ensure a software product meets client needs, is high quality, and functions correctly.</p>
+                        <h3>Unit Aim</h3>
+                        <ul>
+                            <li>Understand the software development and testing methodologies commonly used.</li>
+                            <li>Carry out a range of testing methodologies on a software product to meet a client's needs.</li>
+                            <li>Review and present the results from software tests to suggest improvements.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Unit 15 -->
+        <section class="unit-section" id="unit-15">
+            <div class="unit-card">
+                <div class="unit-content-wrapper">
+                    <div class="unit-image-container">
+                        <img src="Unit 15 .png" alt="Cloud Storage - Cloud Services" loading="lazy">
+                    </div>
+                    <div class="unit-text-container">
+                        <h2>Unit 15: Cloud Storage and Collaboration Tools</h2>
+                        <h3>Unit Brief</h3>
+                        <p>This unit focuses on the technologies and services that enable modern collaboration. It explores the use of cloud-based tools for storage and teamwork, and covers the practical skills needed to design, deploy, manage, and review a collaboration solution for an organization.</p>
+                        <h3>Unit Aim</h3>
+                        <ul>
+                            <li>Explore the use of cloud technologies and tools in organisations.</li>
+                            <li>Design and deploy a cloud-based collaboration service to meet a client's needs.</li>
+                            <li>Manage and review a cloud-based collaboration service to meet a client's needs.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Unit 18 -->
+        <section class="unit-section" id="unit-18">
+            <div class="unit-card">
+                <div class="unit-content-wrapper">
+                    <div class="unit-image-container">
+                        <img src="Unit 18 .png" alt="IoT - Smart Devices" loading="lazy">
+                    </div>
+                    <div class="unit-text-container">
+                        <h2>Unit 18: The Internet of Things (IoT)</h2>
+                        <h3>Unit Brief</h3>
+                        <p>This unit examines the systems, services, and principles that constitute the Internet of Things. It involves designing and prototyping an integrated IoT system or device to solve a real-world problem, covering both the theoretical concepts and practical application.</p>
+                        <h3>Unit Aim</h3>
+                        <ul>
+                            <li>Examine systems and services that form part of the Internet of Things.</li>
+                            <li>Develop a design for an internet of things system or device to solve a problem.</li>
+                            <li>Carry out the prototyping of an integrated IoT system or device to solve a problem.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; Made by Youssef Ahmed Samir. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Menu Button Toggle for Dropdown Navigation
+        const menuButton = document.getElementById('menu-button');
+        const dropdownNav = document.getElementById('dropdown-nav');
+        const header = document.getElementById('main-header');
+
+        menuButton.addEventListener('click', function() {
+            menuButton.classList.toggle('active');
+            dropdownNav.classList.toggle('active');
+        });
+
+        // Close dropdown when clicking on nav links
+        document.querySelectorAll('.nav-links a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Close the dropdown
+                menuButton.classList.remove('active');
+                dropdownNav.classList.remove('active');
+                
+                // Scroll to target section
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Context-Aware Header (Transparent at top, opaque when scrolling)
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 100) {
+                header.classList.add('header-scrolled');
+            } else {
+                header.classList.remove('header-scrolled');
+            }
+        });
+
+        // Active Link Highlighting based on scroll position
+        const sections = document.querySelectorAll('.unit-section, #hero');
+        const navLinks = document.querySelectorAll('.nav-links a');
+
+        function updateActiveLink() {
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.offsetHeight;
+                
+                if (pageYOffset >= sectionTop && pageYOffset < sectionTop + sectionHeight) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            
+            // Remove active class from all links
+            navLinks.forEach(link => {
+                link.classList.remove('active-link');
+                
+                // Add active class to current section link
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active-link');
+                }
+            });
+        }
+
+        // Initialize active link on load
+        window.addEventListener('load', updateActiveLink);
+        
+        // Update active link on scroll
+        window.addEventListener('scroll', updateActiveLink);
+
+        // Scroll Animation for Unit Sections
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.unit-section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Initialize first section as visible
+        document.querySelector('.unit-section').classList.add('visible');
+    </script>
+</body>
+</html>
